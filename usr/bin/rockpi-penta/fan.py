@@ -4,7 +4,7 @@ import mraa  # pylint: disable=import-error
 import misc
 
 pin13 = mraa.Pwm(13)
-pin13.period_ms(13)
+pin13.period_us(40)
 pin13.enable(True)
 
 

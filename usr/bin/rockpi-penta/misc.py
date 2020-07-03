@@ -7,8 +7,8 @@ import mraa  # pylint: disable=import-error
 import shutil
 import subprocess
 import multiprocessing as mp
-from collections import defaultdict
 from configparser import ConfigParser
+from collections import defaultdict, OrderedDict
 
 cmds = {
     'blk': "lsblk | awk '{print $1}'",
@@ -20,7 +20,7 @@ cmds = {
     'disk': "df -h | awk '$NF==\"/\"{printf \"Disk: %d/%dGB %s\", $3,$2,$5}'"
 }
 
-lv2dc = {'lv3': 0, 'lv2': 0.25, 'lv1': 0.5, 'lv0': 0.75}
+lv2dc = OrderedDict({'lv3': 0, 'lv2': 0.25, 'lv1': 0.5, 'lv0': 0.75})
 
 
 def set_mode(pin, mode=1):
@@ -154,8 +154,8 @@ def slider_sleep():
 def fan_temp2dc(t):
     for lv, dc in lv2dc.items():
         if t >= conf['fan'][lv]:
-            return dc
-    return 0
+            break
+    return dc
 
 
 def fan_switch():

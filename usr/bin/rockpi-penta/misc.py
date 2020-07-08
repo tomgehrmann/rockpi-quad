@@ -12,7 +12,7 @@ from collections import defaultdict, OrderedDict
 
 cmds = {
     'blk': "lsblk | awk '{print $1}'",
-    'up': "uptime | sed 's/^.* up \+\(.\+\), \+[0-9] user.*$/\\1/' | awk '{printf \"Uptime: %s\", $0}'",
+    'up': "echo Uptime: `uptime | sed 's/.*up \\([^,]*\\), .*/\\1/'`",
     'temp': "cat /sys/class/thermal/thermal_zone0/temp",
     'ip': "hostname -I | awk '{printf \"IP %s\", $1}'",
     'cpu': "uptime | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'",

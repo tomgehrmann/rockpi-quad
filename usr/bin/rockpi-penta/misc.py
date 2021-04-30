@@ -154,8 +154,8 @@ def slider_sleep():
 def fan_temp2dc(t):
     for lv, dc in lv2dc.items():
         if t >= conf['fan'][lv]:
-            break
-    return dc
+            return dc
+    return 0.999
 
 
 def fan_switch():

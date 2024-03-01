@@ -12,7 +12,7 @@ jobs:
       - name: Build DEB package
         run: |
           chmod -R 775 rockpi-penta/DEBIAN/
-          dpkg-deb --build --compress-type=gzip rockpi-penta
+          dpkg-deb --build -Z gzip rockpi-penta
       - name: Upload DEB package
         uses: actions/upload-artifact@v2
         with:

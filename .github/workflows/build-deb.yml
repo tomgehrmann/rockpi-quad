@@ -18,7 +18,7 @@ jobs:
           sudo apt-get update
       - name: Build DEB package
         run: |
-          
+          chmod -R 775 rockpi-penta/DEBIAN/
           dpkg-deb --build rockpi-penta
       - name: Upload DEB package
         uses: actions/upload-artifact@v2

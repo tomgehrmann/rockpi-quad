@@ -4,6 +4,7 @@ import os
 import time
 import subprocess
 import multiprocessing as mp
+import traceback
 
 import gpiod
 from configparser import ConfigParser
@@ -71,6 +72,7 @@ def read_conf():
         conf['oled']['rotate'] = cfg.getboolean('oled', 'rotate')
         conf['oled']['f-temp'] = cfg.getboolean('oled', 'f-temp')
     except Exception:
+        traceback.print_exc()
         # fan
         conf['fan']['lv0'] = 35
         conf['fan']['lv1'] = 40

@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 import queue
-import sys
 import threading
+import traceback
 
 import fan
 import misc
+
 try:
     import oled
+
     top_board = True
 except Exception as ex:
+    traceback.print_exc()
     top_board = False
-
 
 q = queue.Queue()
 lock = threading.Lock()
@@ -30,31 +32,25 @@ def receive_key(q):
         action[func]()
 
 
-def main():
-    if sys.argv[-1] == 'on':
-        if top_board:
-            oled.welcome()
-    elif sys.argv[-1] == 'off':
-        if top_board:
-            oled.goodbye()
-        exit(0)
-
-
 if __name__ == '__main__':
-    main()
 
     if top_board:
-        p0 = threading.Thread(target=receive_key, args=(q,))
-        p1 = threading.Thread(target=misc.watch_key, args=(q,))
-        p2 = threading.Thread(target=oled.auto_slider, args=(lock,))
-        p3 = threading.Thread(target=fan.running)
+        oled.welcome()
+        p0 = threading.Thread(target=receive_key, args=(q,), daemon=True)
+        p1 = threading.Thread(target=misc.watch_key, args=(q,), daemon=True)
+        p2 = threading.Thread(target=oled.auto_slider, args=(lock,), daemon=True)
+        p3 = threading.Thread(target=fan.running, daemon=True)
 
         p0.start()
         p1.start()
         p2.start()
         p3.start()
-        p3.join()
+        try:
+            p3.join()
+        except KeyboardInterrupt:
+            print("GoodBye ~")
+            oled.goodbye()
+
     else:
-        p3 = threading.Thread(target=fan.running)
+        p3 = threading.Thread(target=fan.running, daemon=False)
         p3.start()
-        p3.join()

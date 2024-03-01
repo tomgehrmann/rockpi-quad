@@ -3,8 +3,7 @@ Description=Rockpi SATA Hat
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /usr/bin/rockpi-penta/main.py on
-ExecStop=/usr/bin/python3 /usr/bin/rockpi-penta/main.py off
+ExecStart=/usr/bin/python3 /usr/bin/rockpi-penta/main.py
 EnvironmentFile=/etc/rockpi-penta.env
 Restart=on-failure
 WorkingDirectory=/usr/bin/rockpi-penta

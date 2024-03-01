@@ -20,11 +20,6 @@ font = {
     '14': ImageFont.truetype('fonts/DejaVuSansMono-Bold.ttf', 14),
 }
 
-# misc.set_mode(23, 0)
-# time.sleep(0.2)
-# misc.set_mode(23, 1)
-
-
 
 def disp_init():
     RESET = getattr(board.pin, os.environ['OLED_RESET'])
@@ -35,11 +30,7 @@ def disp_init():
     return disp
 
 
-try:
-    disp = disp_init()
-except Exception:
-    time.sleep(0.2)
-    disp = disp_init()
+disp = disp_init()
 
 image = Image.new('1', (disp.width, disp.height))
 draw = ImageDraw.Draw(image)
@@ -54,7 +45,7 @@ def disp_show():
 
 def welcome():
     draw.text((0, 0), 'ROCK Pi SATA HAT', font=font['14'], fill=255)
-    draw.text((32, 16), 'loading...', font=font['12'], fill=255)
+    draw.text((32, 16), 'Loading...', font=font['12'], fill=255)
     disp_show()
 
 
@@ -122,5 +113,6 @@ def auto_slider(lock):
 
 
 if __name__ == '__main__':
+    # for test
     lock = mp.Lock()
     auto_slider(lock)

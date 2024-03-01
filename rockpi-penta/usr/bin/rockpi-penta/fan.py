@@ -8,6 +8,8 @@ import gpiod
 
 import misc
 
+pin = None
+
 
 class Pwm:
     def __init__(self, chip):
@@ -57,21 +59,12 @@ class Gpio:
         self.line.request(consumer='fan', type=gpiod.LINE_REQ_DIR_OUT)
         self.value = [period_s / 2, period_s / 2]
         self.period_s = period_s
-        self.thread = threading.Thread(target=self.tr, daemon=False)
+        self.thread = threading.Thread(target=self.tr, daemon=True)
         self.thread.start()
 
     def write(self, duty):
         self.value[1] = duty * self.period_s
         self.value[0] = self.period_s - self.value[1]
-
-
-if os.environ['HARDWARE_PWM'] == '1':
-    chip = os.environ['PWMCHIP']
-    pin = Pwm(chip)
-    pin.period_us(40)
-    pin.enable(True)
-else:
-    pin = Gpio(0.025)
 
 
 def read_temp():
@@ -98,6 +91,14 @@ def change_dc(dc, cache={}):
 
 
 def running():
+    global pin
+    if os.environ['HARDWARE_PWM'] == '1':
+        chip = os.environ['PWMCHIP']
+        pin = Pwm(chip)
+        pin.period_us(40)
+        pin.enable(True)
+    else:
+        pin = Gpio(0.025)
     while True:
         change_dc(get_dc())
         time.sleep(1)

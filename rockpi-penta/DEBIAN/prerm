@@ -1,5 +1,6 @@
-#!/bin/sh
-set -e
+#!/bin/sh -e
+
+rm /etc/rockpi-penta.env > /dev/null || true
 
 systemctl stop rockpi-penta.service
 systemctl disable rockpi-penta.service

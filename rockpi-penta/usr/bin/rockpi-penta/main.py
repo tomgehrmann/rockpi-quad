@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
+import queue
 import sys
+import threading
+
 import fan
 import misc
 try:
     import oled
-    top_board = 1
+    top_board = True
 except Exception as ex:
-    top_board = 0
+    top_board = False
 
-import multiprocessing as mp
 
-q = mp.Queue()
-lock = mp.Lock()
+q = queue.Queue()
+lock = threading.Lock()
 
 action = {
     'none': lambda: 'nothing',
@@ -42,10 +44,10 @@ if __name__ == '__main__':
     main()
 
     if top_board:
-        p0 = mp.Process(target=receive_key, args=(q,))
-        p1 = mp.Process(target=misc.watch_key, args=(q,))
-        p2 = mp.Process(target=oled.auto_slider, args=(lock,))
-        p3 = mp.Process(target=fan.running)
+        p0 = threading.Thread(target=receive_key, args=(q,))
+        p1 = threading.Thread(target=misc.watch_key, args=(q,))
+        p2 = threading.Thread(target=oled.auto_slider, args=(lock,))
+        p3 = threading.Thread(target=fan.running)
 
         p0.start()
         p1.start()
@@ -53,6 +55,6 @@ if __name__ == '__main__':
         p3.start()
         p3.join()
     else:
-        p3 = mp.Process(target=fan.running)
+        p3 = threading.Thread(target=fan.running)
         p3.start()
         p3.join()

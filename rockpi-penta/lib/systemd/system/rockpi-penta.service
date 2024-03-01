@@ -5,6 +5,7 @@ Description=Rockpi SATA Hat
 Type=simple
 ExecStart=/usr/bin/python3 /usr/bin/rockpi-penta/main.py on
 ExecStop=/usr/bin/python3 /usr/bin/rockpi-penta/main.py off
+EnvironmentFile=/etc/rockpi-penta.env
 Restart=on-failure
 WorkingDirectory=/usr/bin/rockpi-penta
 

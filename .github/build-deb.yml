@@ -1,0 +1,27 @@
+name: Build DEB Package
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+      - name: Build DEB package
+        run: |
+          
+          dpkg-deb --build rockpi-penta
+      - name: Upload DEB package
+        uses: actions/upload-artifact@v2
+        with:
+          name: rockpi-penta.deb
+          path: rockpi-penta.deb

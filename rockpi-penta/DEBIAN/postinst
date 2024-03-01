@@ -52,4 +52,8 @@ case "$model" in
   u-boot-update
   checkReboot
   ;;
+*)
+  echo Not support in your board.
+  exit 2
+  ;;
 esac

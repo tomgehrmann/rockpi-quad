@@ -8,13 +8,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Build DEB package
         run: |
           chmod -R 775 rockpi-penta/DEBIAN/
           dpkg-deb --build -Z gzip rockpi-penta
       - name: Upload DEB package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: rockpi-penta.deb
           path: rockpi-penta.deb

@@ -78,10 +78,15 @@ case "$model" in
   checkReboot
   ;;
 *"Radxa ROCK 4SE"* | *"ROCK Pi 4"*)
-  mv /boot/dtbo/rk3399-i2c7.dtbo.disabled /boot/dtbo/rk3399-i2c7.dtbo || true
-  mv /boot/dtbo/rk3399-pwm1.dtbo.disabled /boot/dtbo/rk3399-pwm1.dtbo || true
-  cp /usr/bin/rockpi-penta/env/rock_pi_4.env /etc/rockpi-penta.env
-  u-boot-update || true
+  if [ "$(is_armbian)" = "true" ]; then
+    armbian_require_overlay rk3399-i2c7 rk3399-pwm1
+    cp /usr/bin/rockpi-penta/env/rock_pi_4.env /etc/rockpi-penta.env
+  else
+    mv /boot/dtbo/rk3399-i2c7.dtbo.disabled /boot/dtbo/rk3399-i2c7.dtbo || true
+    mv /boot/dtbo/rk3399-pwm1.dtbo.disabled /boot/dtbo/rk3399-pwm1.dtbo || true
+    cp /usr/bin/rockpi-penta/env/rock_pi_4.env /etc/rockpi-penta.env
+    u-boot-update || true
+  fi
   checkReboot
   ;;
 *)

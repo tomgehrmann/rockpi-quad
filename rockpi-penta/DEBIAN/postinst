@@ -1,7 +1,34 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
-checkReboot(){
+checkReboot() {
   echo Installation will take effect after reboot!!!
+}
+
+is_armbian() {
+  if [ -f /boot/armbianEnv.txt ] || [ -f /boot/dietpiEnv.txt ]; then
+    echo true
+  else
+    echo false
+  fi
+}
+
+armbian_require_overlay() {
+  envFile='/boot/armbianEnv.txt'
+  [ -f /boot/dietpiEnv.txt ] && envFile='/boot/dietpiEnv.txt'
+  overlays=$(grep '^overlays=' "$envFile" | cut -d'=' -f2)
+  for arg in "$@"; do
+    if grep -qE "(^|[[:space:]])$arg([[:space:]]|$)" <<< $overlays; then
+      echo "Overlay ${arg} was already added to $envFile, skip..."
+    else
+      overlays="${overlays} ${arg}"
+      echo "Added overlay: $arg"
+    fi
+  done
+  if grep -q "^overlays=" $envFile; then
+    sed -i '/^overlays=/c\'"overlays=$overlays" $envFile
+  else
+    echo "overlays=$overlays" >> $envFile
+  fi
 }
 
 if [ "$(python3 -c 'import sys; print(f"{sys.version_info.minor >= 11}")')" = "True" ]; then
@@ -26,10 +53,15 @@ case "$model" in
   systemctl start rockpi-penta.service
   ;;
 *"ROCK 5"*)
-  mv /boot/dtbo/rk3588-i2c8-m2.dtbo.disabled /boot/dtbo/rk3588-i2c8-m2.dtbo || true
-  mv /boot/dtbo/rk3588-pwm14-m1.dtbo.disabled /boot/dtbo/rk3588-pwm14-m1.dtbo.dtbo || true
-  cp /usr/bin/rockpi-penta/env/rock_5a.env /etc/rockpi-penta.env
-  u-boot-update || true
+  if [ "$(is_armbian)" = "true" ]; then
+    armbian_require_overlay rk3588-i2c8-m2 rk3588-pwm14-m1
+    cp /usr/bin/rockpi-penta/env/rock_5a_armbian.env /etc/rockpi-penta.env
+  else
+    mv /boot/dtbo/rk3588-i2c8-m2.dtbo.disabled /boot/dtbo/rk3588-i2c8-m2.dtbo || true
+    mv /boot/dtbo/rk3588-pwm14-m1.dtbo.disabled /boot/dtbo/rk3588-pwm14-m1.dtbo || true
+    cp /usr/bin/rockpi-penta/env/rock_5a.env /etc/rockpi-penta.env
+    u-boot-update || true
+  fi
   checkReboot
   ;;
 *"ROCK3 Model C"*)

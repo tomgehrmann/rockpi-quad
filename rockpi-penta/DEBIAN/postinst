@@ -79,7 +79,8 @@ case "$model" in
   ;;
 *"Radxa ROCK 4SE"* | *"ROCK Pi 4"*)
   if [ "$(is_armbian)" = "true" ]; then
-    cp /usr/bin/rockpi-penta/overlays/rk3399-pwm1.dtbo /boot/dtb/rockchip/overlay/rk3399-pwm1-by-rockpi-penta.dtbo
+    cp /usr/bin/rockpi-penta/overlays/rk3399-pwm1.dtbo /boot/dtb/rockchip/overlay/rockchip-rk3399-pwm1-by-rockpi-penta.dtbo
+    chmod +x /boot/dtb/rockchip/overlay/rockchip-rk3399-pwm1-by-rockpi-penta.dtbo
     armbian_require_overlay rk3399-i2c7 rk3399-pwm1-by-rockpi-penta
     cp /usr/bin/rockpi-penta/env/rock_pi_4.env /etc/rockpi-penta.env
   else

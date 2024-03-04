@@ -82,7 +82,7 @@ case "$model" in
     cp /usr/bin/rockpi-penta/overlays/rk3399-pwm1.dtbo /boot/dtb/rockchip/overlay/rockchip-rk3399-pwm1-by-rockpi-penta.dtbo
     chmod +x /boot/dtb/rockchip/overlay/rockchip-rk3399-pwm1-by-rockpi-penta.dtbo
     armbian_require_overlay rk3399-i2c7 rk3399-pwm1-by-rockpi-penta
-    cp /usr/bin/rockpi-penta/env/rock_pi_4.env /etc/rockpi-penta.env
+    cp /usr/bin/rockpi-penta/env/rock_pi_4_armbian.env /etc/rockpi-penta.env
   else
     mv /boot/dtbo/rk3399-i2c7.dtbo.disabled /boot/dtbo/rk3399-i2c7.dtbo || true
     mv /boot/dtbo/rk3399-pwm1.dtbo.disabled /boot/dtbo/rk3399-pwm1.dtbo || true

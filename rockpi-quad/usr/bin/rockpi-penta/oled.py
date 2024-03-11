@@ -27,13 +27,6 @@ def disp_init():
     disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, reset=digitalio.DigitalInOut(RESET))
     disp.fill(0)
     disp.show()
-    while True:
-        disp.fill(0)
-        disp.show()
-        time.sleep(0.5)
-        disp.fill(1)
-        disp.show()
-        time.sleep(0.5)
     return disp
 
 

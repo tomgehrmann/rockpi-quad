@@ -11,10 +11,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build DEB package
         run: |
-          chmod -R 775 rockpi-penta/DEBIAN/
-          dpkg-deb --build -Z gzip rockpi-penta
+          chmod -R 775 rockpi-quad/DEBIAN/
+          dpkg-deb --build -Z gzip rockpi-quad
       - name: Upload DEB package
         uses: actions/upload-artifact@v4
         with:
-          name: rockpi-penta.deb
-          path: rockpi-penta.deb
+          name: rockpi-quad.deb
+          path: rockpi-quad.deb

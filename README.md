@@ -1,5 +1,9 @@
 # ROCK Pi Penta SATA
 
-[Penta SATA HAT](<https://wiki.radxa.com/Penta_SATA_HAT>) for ROCK Pi 4B
+Top Board control program
 
-![penta-hat](https://cos.setf.me/assets/images/penta-sata-hat.png)
+[Penta SATA HAT wiki](<https://wiki.radxa.com/Penta_SATA_HAT>)
+
+[Penta SATA HAT docs](https://docs.radxa.com/en/accessories/penta-sata-hat)
+
+![penta-hat](images/penta-sata-hat.png)

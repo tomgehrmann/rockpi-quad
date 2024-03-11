@@ -1,12 +1,12 @@
 #!/bin/sh -e
 
-rm /etc/rockpi-penta.env > /dev/null || true
+rm /etc/rockpi-quad.env > /dev/null || true
 
-systemctl stop rockpi-penta.service
-systemctl disable rockpi-penta.service
+systemctl stop rockpi-quad.service
+systemctl disable rockpi-quad.service
 
 if [ -d /run/systemd/system ]; then
   systemctl --system daemon-reload > /dev/null || true
 fi
 
-rm -rf /usr/bin/rockpi-penta/__pycache__
+rm -rf /usr/bin/rockpi-quad/__pycache__

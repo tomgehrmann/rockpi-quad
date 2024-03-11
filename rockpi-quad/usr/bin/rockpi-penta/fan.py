@@ -19,10 +19,11 @@ class Pwm:
             chip = f'pwmchip{chip}'
         except ValueError:
             pass
-        self.filepath = f"/sys/class/pwm/{chip}/pwm0/"
+        fun = os.environ.get('PWM_FUN', '0')
+        self.filepath = f"/sys/class/pwm/{chip}/pwm{fun}/"
         try:
             with open(f"/sys/class/pwm/{chip}/export", 'w') as f:
-                f.write('0')
+                f.write(fun)
         except OSError:
             print("Waring: init pwm error")
             traceback.print_exc()
@@ -36,6 +37,10 @@ class Pwm:
         self.period(us * 1000)
 
     def enable(self, t: bool):
+        if (polarity := os.environ.get('POLARITY')) is not None:
+            with open(os.path.join(self.filepath, 'polarity'), 'w') as f:
+                f.write(polarity)
+
         with open(os.path.join(self.filepath, 'enable'), 'w') as f:
             f.write(f"{int(t)}")
 

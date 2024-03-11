@@ -163,5 +163,14 @@ def get_func(key):
     return conf['key'].get(key, 'none')
 
 
+def disk_turn_on():
+    line1 = gpiod.Chip(os.environ['SATA_CHIP']).get_line(int(os.environ['SATA_LINE_1']))
+    line1.request(consumer='SATA_LINE_1', type=gpiod.LINE_REQ_DIR_OUT)
+    line1.set_value(1)
+    line2 = gpiod.Chip(os.environ['SATA_CHIP']).get_line(int(os.environ['SATA_LINE_2']))
+    line2.request(consumer='SATA_LINE_2', type=gpiod.LINE_REQ_DIR_OUT)
+    line2.set_value(1)
+
+
 conf = {'disk': [], 'idx': mp.Value('d', -1), 'run': mp.Value('d', 1)}
 conf.update(read_conf())

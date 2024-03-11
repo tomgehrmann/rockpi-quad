@@ -33,7 +33,7 @@ def receive_key(q):
 
 
 if __name__ == '__main__':
-
+    misc.disk_turn_on()
     if top_board:
         oled.welcome()
         p0 = threading.Thread(target=receive_key, args=(q,), daemon=True)

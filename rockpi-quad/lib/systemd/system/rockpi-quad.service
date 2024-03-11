@@ -3,11 +3,11 @@ Description=Rockpi SATA Hat
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /usr/bin/rockpi-penta/main.py
+ExecStart=/usr/bin/python3 /usr/bin/rockpi-quad/main.py
 KillSignal=SIGINT
-EnvironmentFile=/etc/rockpi-penta.env
+EnvironmentFile=/etc/rockpi-quad.env
 Restart=on-failure
-WorkingDirectory=/usr/bin/rockpi-penta
+WorkingDirectory=/usr/bin/rockpi-quad
 
 [Install]
 WantedBy=multi-user.target

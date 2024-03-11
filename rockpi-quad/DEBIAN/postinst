@@ -48,7 +48,7 @@ case "$model" in
     echo "dtoverlay=pwm,pin=13,func=4" >> /boot/config.txt
   fi
   mv /usr/bin/rockpi-quad/env/rpi4.env /etc/rockpi-quad.env
-  systemctl start rockpi-quad.service
+  checkReboot
   ;;
 *"Radxa ROCK 4SE"* | *"ROCK Pi 4"*)
   if [ "$(is_armbian)" = "true" ]; then

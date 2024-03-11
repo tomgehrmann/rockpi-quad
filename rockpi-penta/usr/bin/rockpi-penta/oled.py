@@ -1,10 +1,17 @@
 #!/usr/bin/python3
+import os
 import time
-import misc
-import Adafruit_SSD1306
+
+import adafruit_ssd1306
+import board
+import digitalio
+import busio
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+import multiprocessing as mp
+
+import misc
 
 font = {
     '10': ImageFont.truetype('fonts/DejaVuSansMono-Bold.ttf', 10),
@@ -13,23 +20,17 @@ font = {
     '14': ImageFont.truetype('fonts/DejaVuSansMono-Bold.ttf', 14),
 }
 
-misc.set_mode(23, 0)
-time.sleep(0.2)
-misc.set_mode(23, 1)
-
 
 def disp_init():
-    disp = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus=7)
-    [getattr(disp, x)() for x in ('begin', 'clear', 'display')]
+    RESET = getattr(board.pin, os.environ['OLED_RESET'])
+    i2c = busio.I2C(getattr(board.pin, os.environ['SCL']), getattr(board.pin, os.environ['SDA']))
+    disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, reset=digitalio.DigitalInOut(RESET))
+    disp.fill(0)
+    disp.show()
     return disp
 
 
-try:
-    disp = disp_init()
-except Exception:
-    misc.open_pwm_i2c()
-    time.sleep(0.2)
-    disp = disp_init()
+disp = disp_init()
 
 image = Image.new('1', (disp.width, disp.height))
 draw = ImageDraw.Draw(image)
@@ -38,13 +39,13 @@ draw = ImageDraw.Draw(image)
 def disp_show():
     im = image.rotate(180) if misc.conf['oled']['rotate'] else image
     disp.image(im)
-    disp.display()
+    disp.write_framebuf()
     draw.rectangle((0, 0, disp.width, disp.height), outline=0, fill=0)
 
 
 def welcome():
-    draw.text((0, 0), 'ROCK Pi SATA HAT', font=font['14'], fill=255)
-    draw.text((32, 16), 'loading...', font=font['12'], fill=255)
+    draw.text((0, 0), 'ROCKPi SATA HAT', font=font['14'], fill=255)
+    draw.text((32, 16), 'Loading...', font=font['12'], fill=255)
     disp_show()
 
 
@@ -109,3 +110,9 @@ def auto_slider(lock):
         misc.slider_sleep()
     else:
         slider(lock)
+
+
+if __name__ == '__main__':
+    # for test
+    lock = mp.Lock()
+    auto_slider(lock)

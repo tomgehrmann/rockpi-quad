@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import re
 import os
-import sys
 import time
-import mraa  # pylint: disable=import-error
-import shutil
 import subprocess
 import multiprocessing as mp
+import traceback
+
+import gpiod
 from configparser import ConfigParser
 from collections import defaultdict, OrderedDict
 
@@ -21,15 +21,6 @@ cmds = {
 }
 
 lv2dc = OrderedDict({'lv3': 0, 'lv2': 0.25, 'lv1': 0.5, 'lv0': 0.75})
-
-
-def set_mode(pin, mode=1):
-    try:
-        pin = mraa.Gpio(pin)
-        pin.dir(mraa.DIR_OUT)
-        pin.write(mode)
-    except Exception as ex:
-        print(ex)
 
 
 def check_output(cmd):
@@ -81,6 +72,7 @@ def read_conf():
         conf['oled']['rotate'] = cfg.getboolean('oled', 'rotate')
         conf['oled']['f-temp'] = cfg.getboolean('oled', 'f-temp')
     except Exception:
+        traceback.print_exc()
         # fan
         conf['fan']['lv0'] = 35
         conf['fan']['lv1'] = 40
@@ -103,12 +95,17 @@ def read_conf():
 
 
 def read_key(pattern, size):
+    CHIP_NAME = os.environ['BUTTON_CHIP']
+    LINE_NUMBER = os.environ['BUTTON_LINE']
+
     s = ''
-    pin11 = mraa.Gpio(11)
-    pin11.dir(mraa.DIR_IN)
+    chip = gpiod.Chip(str(CHIP_NAME))
+    line = chip.get_line(int(LINE_NUMBER))
+    line.request(consumer='hat_button', type=gpiod.LINE_REQ_DIR_OUT)
+    line.set_value(1)
 
     while True:
-        s = s[-size:] + str(pin11.read())
+        s = s[-size:] + str(line.get_value())
         for t, p in pattern.items():
             if p.match(s):
                 return t
@@ -159,34 +156,12 @@ def fan_temp2dc(t):
 
 
 def fan_switch():
-    conf['run'].value = not(conf['run'].value)
+    conf['run'].value = not conf['run'].value
 
 
 def get_func(key):
     return conf['key'].get(key, 'none')
 
 
-def open_pwm_i2c():
-    def replace(filename, raw_str, new_str):
-        with open(filename, 'r') as f:
-            content = f.read()
-
-        if raw_str in content:
-            shutil.move(filename, filename + '.bak')
-            content = content.replace(raw_str, new_str)
-
-            with open(filename, 'w') as f:
-                f.write(content)
-
-    replace('/boot/hw_intfc.conf', 'intfc:pwm0=off', 'intfc:pwm0=on')
-    replace('/boot/hw_intfc.conf', 'intfc:pwm1=off', 'intfc:pwm1=on')
-    replace('/boot/hw_intfc.conf', 'intfc:i2c7=off', 'intfc:i2c7=on')
-
-
 conf = {'disk': [], 'idx': mp.Value('d', -1), 'run': mp.Value('d', 1)}
 conf.update(read_conf())
-
-
-if __name__ == '__main__':
-    if sys.argv[-1] == 'open_pwm_i2c':
-        open_pwm_i2c()

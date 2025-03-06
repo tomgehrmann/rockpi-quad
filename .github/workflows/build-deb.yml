@@ -1,20 +1,26 @@
-name: Build DEB Package
+name: Build and Release DEB Package
 
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-release:
+    timeout-minutes: 15
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Build DEB package
         run: |
           chmod -R 775 rockpi-quad/DEBIAN/
           dpkg-deb --build -Z gzip rockpi-quad
-      - name: Upload DEB package
-        uses: actions/upload-artifact@v4
+      - name: Release Draft DEB
+        uses: softprops/action-gh-release@v2.2.1
         with:
-          name: rockpi-quad.deb
-          path: rockpi-quad.deb
+          draft: true
+          generate_release_notes: true
+          files: rockpi-quad.deb
+

@@ -23,5 +23,5 @@ IMPORTANT: Make sure that the user `_apt` has the necessary permissions to insta
 
 
 == Contributors
-* The fixes are probably from Alexander Larin (https://github.com/alexanderlarin[@alexanderlarin]), as his repository shows the earliest commits related to these issues.
+* The fixes are probably from Alexander Larin (https://github.com/alexanderlarin[@alexanderlarin]), as https://github.com/alexanderlarin/rockpi-quad[his repository] shows the earliest commits related to these issues.
 * I just modified the build process.
